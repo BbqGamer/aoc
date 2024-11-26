@@ -1,4 +1,9 @@
 a.out
+.vscode
+input
+.metals
+.scala-build
+.bsp
 
 target/
 *.lock
