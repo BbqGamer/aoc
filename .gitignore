@@ -4,6 +4,7 @@ input
 .metals
 .scala-build
 .bsp
+input.txt
 
 target/
 *.lock
