@@ -1,11 +1,9 @@
 {
-    split($0, a) 
-    for (i = 1; i <= length(a); i++) {
+    for (i = 1; i <= NF; i++) {
         new_list = ""
-        for (j = 1; j <= length(a); j++) {
-            if (i != j) {
-                new_list = new_list " " a[j]
-            }
+        for (j = 1; j <= NF; j++) {
+            if (i == j) continue
+            new_list = new_list " " $j
         }
         print NR new_list
     }
