@@ -1,7 +1,7 @@
 ## Solution
 ```bash
 # Part1:
-grep -oP "mul\(\d+,\d+\)" input.txt | awk -f prog.awk
+grep -oE "mul\([0-9]+,[0-9]+\)" input.txt | sed -En 's/mul\(([0-9]+),([0-9]+)\)/\1 \2/p' | awk '{res+=$1*$2}END{print res}'
 # Part2:
-grep -oP "mul\(\d+,\d+\)|do\(\)|don't\(\)" input.txt | awk -f prog.awk
+grep -oE "[a-z\']+\([0-9\,]*)" input.txt | sed -Enf parse.sed | awk -f prog.awk
 ```

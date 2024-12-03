@@ -1,13 +1,8 @@
-/do\(\)/ {
-    disabled = 0
-}
-/don't\(\)/ {
-    disabled = 1
-}
-/mul\([0-9]+,[0-9]+\)/ {
+$1 == "do"   { disabled = 0 }
+$1 == "dont" { disabled = 1 }
+$1 == "mul"  {
     if (disabled) next
-    match($0, /mul\(([0-9]+),([0-9]+)\)/, a)
-    res += a[1] * a[2]
+    res += $2 * $3
 }
 END { print res }
 
