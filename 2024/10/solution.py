@@ -9,14 +9,19 @@ for y, row in enumerate(grid):
             trailheads.append((y, x))
 
 count = 0
+second_count = 0
+
 for starty, startx in trailheads:
     reachable = set()
+    ids = set()
+
     stack = [(starty, startx)]
     while stack:
         y, x = stack.pop()
         h = grid[y][x]
         if h == 9:
             reachable.add((y, x))
+            second_count += 1
             continue
 
         if x > 0 and grid[y][x - 1] - h == 1:
@@ -30,3 +35,4 @@ for starty, startx in trailheads:
     count += len(reachable)
 
 print(count)
+print(second_count)
