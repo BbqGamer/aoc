@@ -8,8 +8,8 @@ for y, row in enumerate(grid):
         if h == 0:
             trailheads.append((y, x))
 
-count = 0
-second_count = 0
+part1 = 0
+part2 = 0
 
 for starty, startx in trailheads:
     reachable = set()
@@ -21,18 +21,22 @@ for starty, startx in trailheads:
         h = grid[y][x]
         if h == 9:
             reachable.add((y, x))
-            second_count += 1
+            part2 += 1
             continue
 
-        if x > 0 and grid[y][x - 1] - h == 1:
-            stack.append((y, x - 1))
-        if y > 0 and grid[y - 1][x] - h == 1:
-            stack.append((y - 1, x))
-        if x < len(grid) - 1 and grid[y][x + 1] - h == 1:
-            stack.append((y, x + 1))
-        if y < len(grid[0]) - 1 and grid[y + 1][x] - h == 1:
-            stack.append((y + 1, x))
-    count += len(reachable)
+        for dx in [-1, 1]:
+            for dy in [-1, 1]:
+                nx = x + dx
+                ny = y + dy
+                if (
+                    nx >= 0
+                    and ny >= 0
+                    and nx < len(grid)
+                    and ny < len(grid[0])
+                    and grid[ny][nx] - h == 1
+                ):
+                    stack.append((ny, nx))
+    part1 += len(reachable)
 
-print(count)
-print(second_count)
+print(part1)
+print(part2)
