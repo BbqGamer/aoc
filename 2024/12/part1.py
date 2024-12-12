@@ -1,11 +1,7 @@
 import sys
 
 data = [l.strip() for l in sys.stdin.readlines()]
-
-to_visit = set()
-for i in range(len(data)):
-    for j in range(len(data[i])):
-        to_visit.add((i, j))
+to_visit = {(i, j) for i in range(len(data)) for j in range(len(data[i]))}
 
 
 def out_of_bound(i, j):
@@ -25,13 +21,11 @@ def dfs(i, j):
             peri += 1
             continue
 
-        if (ni, nj) not in to_visit:
-            continue
-
-        to_visit.remove((ni, nj))
-        narea, nperi = dfs(ni, nj)
-        area += narea
-        peri += nperi
+        if (ni, nj) in to_visit:
+            to_visit.remove((ni, nj))
+            narea, nperi = dfs(ni, nj)
+            area += narea
+            peri += nperi
 
     return area, peri
 
