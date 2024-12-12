@@ -16,7 +16,7 @@ def neighborbood(i, j):
         yield i + di, j + dj
 
 
-def neighbor_pairs(i, j):
+def neighbor_triples(i, j):
     for x in range(len(N)):
         ai, aj = N[x]
         a = (i + ai, j + aj)
@@ -33,7 +33,7 @@ def dfs(i, j):
     area = 1
     peri = 0
     vert = 0
-    for (ai, aj), (bi, bj), (di, dj) in neighbor_pairs(i, j):
+    for (ai, aj), (bi, bj), (di, dj) in neighbor_triples(i, j):
         aother = out_of_bound(ai, aj) or data[ai][aj] != data[i][j]
         bother = out_of_bound(bi, bj) or data[bi][bj] != data[i][j]
         dother = out_of_bound(di, dj) or data[di][dj] != data[i][j]
