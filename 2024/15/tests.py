@@ -29,17 +29,17 @@ GRID, DIRS, ROBOT = parse(EXAMPLE)
 
 
 def test_can_box_move():
-    assert can_box_move(GRID, complex(3, 9), -1j)
-    assert can_box_move(GRID, complex(3, 8), -1j)
+    assert can_box_move(complex(3, 9), -1j, GRID)
+    assert can_box_move(complex(3, 8), -1j, GRID)
 
-    assert can_box_move(GRID, complex(3, 7), 1)
-    assert can_box_move(GRID, complex(3, 6), 1)
+    assert can_box_move(complex(3, 7), 1, GRID)
+    assert can_box_move(complex(3, 6), 1, GRID)
 
-    assert can_box_move(GRID, complex(3, 7), 1j)
-    assert can_box_move(GRID, complex(3, 6), 1j)
+    assert can_box_move(complex(3, 7), 1j, GRID)
+    assert can_box_move(complex(3, 6), 1j, GRID)
 
-    assert can_box_move(GRID, complex(4, 7), -1)
-    assert can_box_move(GRID, complex(4, 6), -1)
+    assert can_box_move(complex(4, 7), -1, GRID)
+    assert can_box_move(complex(4, 6), -1, GRID)
 
 
 def test_move_boxes_left():
@@ -100,7 +100,7 @@ def test_can_bo_move_into_wall(x):
         2 + 2j: WALL,
         1 + 3j: WALL,
     }
-    assert not can_box_move(grid, box + x, -1j)
-    assert not can_box_move(grid, box + x, 1j)
-    assert not can_box_move(grid, box + x, 1)
-    assert not can_box_move(grid, box + x, -1)
+    assert not can_box_move(box + x, -1j, grid)
+    assert not can_box_move(box + x, 1j, grid)
+    assert not can_box_move(box + x, 1, grid)
+    assert not can_box_move(box + x, -1, grid)
