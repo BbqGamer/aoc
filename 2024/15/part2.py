@@ -114,25 +114,17 @@ if __name__ == "__main__":
     grid, dirs, robot = parse(data)
 
     for it, d in enumerate(dirs):
-        render(grid, robot)
-        print(it, d)
-
         new = robot + d
         if empty(new, grid):
-            print("empty")
             robot = new
             continue
 
         if is_wall(new, grid):
-            print("wall")
             continue
 
         if can_box_move(new, d, grid):
-            print("box can move")
             move_boxes(new, d, grid)
             robot = new
-        else:
-            print("box cannot move")
 
     result = 0
     for c in grid:
