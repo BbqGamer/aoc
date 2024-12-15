@@ -1,6 +1,6 @@
 import pytest
 
-from part2 import BOX, can_box_move, move_boxes, parse
+from part2 import BOX, WALL, can_box_move, move_boxes, parse
 
 EXAMPLE = """#######
 #...#.#
@@ -88,3 +88,19 @@ def test_move_boxes_up(x):
 
     assert grid[2 + 6j] == BOX
     assert 2 + 7j not in grid
+
+
+@pytest.mark.parametrize("x", [0, 1j])
+def test_can_bo_move_into_wall(x):
+    box = 1 + 1j
+    grid = {
+        1 + 0j: WALL,
+        box: BOX,
+        1j: WALL,
+        2 + 2j: WALL,
+        1 + 3j: WALL,
+    }
+    assert not can_box_move(grid, box + x, -1j)
+    assert not can_box_move(grid, box + x, 1j)
+    assert not can_box_move(grid, box + x, 1)
+    assert not can_box_move(grid, box + x, -1)
