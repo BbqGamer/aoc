@@ -20,7 +20,7 @@ class State:
         opcode, operand = self.program[self.ip : self.ip + 2]
         match opcode:
             case 0:  # adv
-                self.reg_A = int(self.reg_A / 2 ** self.combo(operand))
+                self.reg_A = self.reg_A // 2 ** self.combo(operand)
             case 1:  # bxl
                 self.reg_B = self.reg_B ^ operand
             case 2:  # bst
@@ -36,9 +36,9 @@ class State:
                     self.output += ","
                 self.output += str(self.combo(operand) % 8)
             case 6:  # bdv
-                self.reg_B = int(self.reg_A / self.combo(operand))
+                self.reg_B = self.reg_A // 2 ** self.combo(operand)
             case 7:  # cdv
-                self.reg_C = int(self.reg_A / self.combo(operand))
+                self.reg_C = self.reg_A // 2 ** self.combo(operand)
             case _:
                 print("Unknown opcode")
         self.ip += 2
