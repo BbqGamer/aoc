@@ -2,7 +2,6 @@ import heapq
 import sys
 from collections import defaultdict
 
-BYTES = 1024
 SIZE = 71
 
 
@@ -17,10 +16,15 @@ def neighborhood(i, j, byte_positions):
 if __name__ == "__main__":
     starting = end = None
 
-    byte_positions = set()
-    for i, line in enumerate(sys.stdin.readlines()):
-        print(i)
-        byte_positions.add(tuple(map(int, line.split(","))))
+    byte_list = list()
+    for line in sys.stdin.readlines():
+        byte_list.append(tuple(map(int, line.split(","))))
+
+    l = 0
+    r = len(byte_list) - 1
+    while l < r:
+        m = (l + r) // 2
+        byte_positions = set(byte_list[: m + 1])
 
         visited = set()
         distances = defaultdict(lambda: float("inf"))
@@ -51,5 +55,8 @@ if __name__ == "__main__":
                 heapq.heappush(pq, (newdist, n))
 
         if distances[(SIZE - 1, SIZE - 1)] == float("inf"):
-            print("Part 2: ", i, line)
-            break
+            r = m - 1
+        else:
+            l = m
+
+    print("Part 2: ", byte_list[m])
