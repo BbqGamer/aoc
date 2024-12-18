@@ -20,9 +20,9 @@ class State:
         opcode, operand = self.program[self.ip : self.ip + 2]
         match opcode:
             case 0:  # adv
-                self.reg_A = self.reg_A // 2 ** self.combo(operand)
+                self.reg_A >>= self.combo(operand)
             case 1:  # bxl
-                self.reg_B = self.reg_B ^ operand
+                self.reg_B ^= operand
             case 2:  # bst
                 self.reg_B = self.combo(operand) % 8
             case 3:  # jnz
@@ -30,15 +30,15 @@ class State:
                     self.ip = operand
                     return False
             case 4:  # bxc
-                self.reg_B = self.reg_B ^ self.reg_C
+                self.reg_B ^= self.reg_C
             case 5:  # out
                 if self.output:
                     self.output += ","
                 self.output += str(self.combo(operand) % 8)
             case 6:  # bdv
-                self.reg_B = self.reg_A // 2 ** self.combo(operand)
+                self.reg_B = self.reg_A >> self.combo(operand)
             case 7:  # cdv
-                self.reg_C = self.reg_A // 2 ** self.combo(operand)
+                self.reg_C = self.reg_A >> self.combo(operand)
             case _:
                 print("Unknown opcode")
         self.ip += 2
