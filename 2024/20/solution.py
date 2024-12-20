@@ -41,23 +41,16 @@ def dijkstra(grid):
     return distances
 
 
-def neighbors_dist_2(cur):
+def cheated_neighbors(cur, dist=2):
     i, j = cur
-    N = [
-        (i + 2, j),
-        (i - 2, j),
-        (i, j - 2),
-        (i, j + 2),
-        (i + 1, j + 1),
-        (i + 1, j - 1),
-        (i - 1, j + 1),
-    ]
-    for x, y in N:
-        if x < 0 or y < 0 or x >= len(grid) or y >= len(grid[0]):
-            continue
+    for x in range(i - dist, i + dist + 1):
+        for y in range(j - dist, j + dist + 1):
+            if x < 0 or y < 0 or x >= len(grid) or y >= len(grid[0]):
+                continue
 
-        if grid[x][y] != "#":
-            yield x, y
+            steps = abs(x - i) + abs(y - j)
+            if steps <= dist and grid[x][y] != "#":
+                yield x, y, steps
 
 
 if __name__ == "__main__":
@@ -77,13 +70,16 @@ if __name__ == "__main__":
 
     distances = dijkstra(grid)
 
-    part1 = 0
+    for part, CHEAT_STEPS in enumerate([2, 20]):
+        cheat_count = 0
 
-    for i, row in enumerate(grid):
-        for j, c in enumerate(row):
-            if c != "#":
-                for x, y in neighbors_dist_2((i, j)):
-                    if distances[(x, y)] - distances[(i, j)] >= 102:
-                        part1 += 1
+        for i, row in enumerate(grid):
+            for j, c in enumerate(row):
+                if c == "#":
+                    continue
 
-    print(part1)
+                for x, y, steps in cheated_neighbors((i, j), CHEAT_STEPS):
+                    if distances[(x, y)] - distances[(i, j)] - steps >= 100:
+                        cheat_count += 1
+
+        print(f"Part {part + 1}: {cheat_count}")
