@@ -8,24 +8,18 @@ HEIGHT = 7
 
 keys, locks = [], []
 for d in data:
-    arr = d.split("\n")
-    counts = [0 for _ in range(WIDTH)]
-    for i in range(1, HEIGHT - 1):
-        for j in range(WIDTH):
-            if arr[i][j] == "#":
-                counts[j] += 1
-
+    arr = d.strip().split("\n")
+    counts = tuple(
+        len(list(filter(lambda a: a == "#", col))) for col in list(zip(*arr))
+    )
     if arr[0][0] == "#":
-        locks.append(tuple(counts))
+        locks.append(counts)
     else:
-        keys.append(tuple(counts))
-
+        keys.append(counts)
 
 result = 0
 for key, lock in itertools.product(keys, locks):
-    sumed = [key[i] + lock[i] for i in range(WIDTH)]
-    if all(s <= HEIGHT - 2 for s in sumed):
+    if all(key[i] + lock[i] <= HEIGHT for i in range(len(lock))):
         result += 1
-        continue
 
 print(result)
