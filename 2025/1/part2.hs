@@ -4,10 +4,8 @@ parse ('R':xs) =   read xs :: Int
 
 hits :: Int -> Int -> (Int, Int)
 hits s m
-    | m > 0  = (mod (s + m) 100, div (s + m) 100)
+    | m >= 0  = (mod (s + m) 100, div (s + m) 100)
     | m < 0  = (mod (s + m) 100, div ((if s == 0 then 0 else 100 - s) - m) 100)
-    | otherwise = (s, 0)
-    
 
 applyMoves :: [Int] -> (Int, Int)
 applyMoves = foldl step (50, 0)
@@ -21,7 +19,5 @@ applyMoves = foldl step (50, 0)
 main :: IO ()
 main = do
     contents <- getContents
-    let inputLines = lines contents
-    let parsed = map parse inputLines
-    let (finalState, totalSum) = applyMoves parsed
+    let (finalState, totalSum) = applyMoves (map parse (lines contents))
     print totalSum
