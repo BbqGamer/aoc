@@ -3,17 +3,16 @@ import sys
 import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 
-data = [[True if c == "@" else False for c in line.strip()] for line in sys.stdin]
-arr = np.array(data)
-total = 0
+prev = start = np.array([[c == "@" for c in line.strip()] for line in sys.stdin])
+part1 = False
 while True:
-    slide = sliding_window_view(np.pad(arr, (1, 1)), (3, 3))
-    toremove = (slide[:, :, 1, 1] == 1) & (slide.sum(axis=(2, 3)) <= 4)
-    sum_remove = np.sum(toremove)
-    if total == 0:
-        print("part 1:", sum_remove)
-    total += sum_remove
-    if sum_remove == 0:
+    s = sliding_window_view(np.pad(prev, (1, 1)), (3, 3))
+    cur = (s[:, :, 1, 1] == 1) & (s.sum(axis=(2, 3)) > 4)
+    if not part1:
+        part1 = True
+        print("part1:", np.sum(start) - np.sum(cur))
+    if np.all(cur == prev):
         break
-    arr = arr & ~toremove
-print("part 2:", total)
+    prev = cur
+
+print("part2: ", np.sum(start) - np.sum(cur))
