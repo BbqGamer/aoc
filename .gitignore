@@ -5,6 +5,10 @@ input
 .scala-build
 .bsp
 input.txt
+example
+*.hi
+*.o
 
 target/
 *.lock
+__pycache__
