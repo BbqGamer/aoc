@@ -3,11 +3,10 @@ from itertools import accumulate
 
 disk = list(map(int, input()))
 offsets = list(accumulate([0] + disk))[:-1]
-
 D = list(zip(disk, offsets))
-
 full = D[::2]
 empty = D[1::2]
+
 index = []
 for i in range(10):
     index.append([])
@@ -20,11 +19,11 @@ for identifier in reversed(range(len(full))):
     moved = False
     n, offset = full[identifier]
 
-    smallest = float("inf")
+    leftmost = float("inf")
     chosen = None
     for en in range(n, len(index)):
-        if index[en] and index[en][0] < smallest and offset > index[en][0]:
-            smallest = index[en][0]
+        if index[en] and index[en][0] < leftmost and offset > index[en][0]:
+            leftmost = index[en][0]
             chosen = en
 
     if not chosen:

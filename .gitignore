@@ -8,6 +8,7 @@ input.txt
 example
 *.hi
 *.o
+.venv/
 
 target/
 *.lock

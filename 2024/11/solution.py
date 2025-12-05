@@ -1,7 +1,7 @@
-from functools import lru_cache
+from functools import cache
 
 
-@lru_cache(maxsize=None)
+@cache
 def solve(number, iters=75):
     if iters == 0:
         return 1

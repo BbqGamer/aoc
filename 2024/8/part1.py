@@ -18,7 +18,7 @@ for frequency, positions in antenas.items():
         antinodes.add(b - diff)
 
 
-def fits(antinode: complex):
+def fits(antinode: complex) -> bool:
     a = antinode.real
     b = antinode.imag
     return a >= 0 and b >= 0 and a <= x and b <= y

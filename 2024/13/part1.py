@@ -2,6 +2,7 @@ import re
 import sys
 from functools import cache
 
+print(sys.getrecursionlimit())
 sys.setrecursionlimit(1500)
 
 PATTERN = (

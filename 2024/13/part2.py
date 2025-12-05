@@ -1,7 +1,9 @@
 import re
 import sys
 
-import numpy as np
+from scipy.optimize import linprog
+
+sys.setrecursionlimit(1500)
 
 PATTERN = (
     r"Button A: X\+(\d+), Y\+(\d+)\n"
@@ -15,11 +17,17 @@ for x in re.finditer(PATTERN, sys.stdin.read()):
     xd += 10000000000000
     yd += 10000000000000
 
-    A = np.array([[xa, xb], [ya, yb]], dtype=np.int64)
-    b = np.array([xd, yd], dtype=np.int64)
-    resa, resb = np.round(np.linalg.solve(A, b))
-    if resa * xa + resb * xb == xd and resa * ya + resb * yb == yd:
-        print(int(resa), int(resb))
-        part2 += 3 * resa + resb
+    c = [3, 1]
+    A = [[xa, xb], [ya, yb]]
+    b = [xd, yd]
+
+    integrality = [1, 1]
+    res = linprog(c, A_eq=A, b_eq=b, integrality=[3, 3])
+
+    print(res.status)
+    if res.status == 0:
+        an, bn = map(int, res.x)
+        part2 += int(res.fun)
+
 
 print(part2)

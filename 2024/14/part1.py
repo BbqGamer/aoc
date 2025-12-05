@@ -44,13 +44,10 @@ def quadrant(x, y, lenx, leny):
     return quad
 
 
-print(lenx, leny)
-
 counter = defaultdict(lambda: 0)
 for x, y, vx, vy in robots:
     newx, newy = cycle1d(x, vx * SECONDS, lenx), cycle1d(y, vy * SECONDS, leny)
     quad = quadrant(newx, newy, lenx, leny)
-    print(quad, newx, newy)
     counter[quad] += 1
 
 part1 = 1
