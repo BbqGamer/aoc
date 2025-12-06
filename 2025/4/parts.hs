@@ -45,8 +45,14 @@ count p xs = length (filter p xs)
 countRocks :: [[Char]] -> Int
 countRocks grid = sum (map (count (=='@')) grid)
 
+repeatUntilStable grid = 
+    let new = transform grid
+    in if grid == new then grid else repeatUntilStable new
+
 main :: IO ()
 main = do
     start <- lines <$> getContents
-    let transformed = transform start
-    print ((countRocks start) - (countRocks transformed))
+    let part1 = transform start
+    print ((countRocks start) - (countRocks part1))
+    let part2 = repeatUntilStable part1
+    print ((countRocks start) - (countRocks part2))
