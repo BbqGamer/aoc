@@ -7,5 +7,6 @@ calc _ = 0
 
 main :: IO ()
 main = do
-    input <- transpose . map words . reverse . lines <$> getContents
-    print $ sum (map calc input)
+    input <- lines <$> getContents
+    let processed = (transpose . map words . reverse) input
+    print $ sum (map calc processed)
