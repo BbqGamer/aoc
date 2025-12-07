@@ -1,29 +1,24 @@
-mapper (val, '^') = val
-mapper (val, _) = 0
-
 roll :: [a] -> [(a, a, a)]
-roll xs
-    | length xs < 3 = []
-    | otherwise     = (xs !! 0, xs !! 1, xs !! 2) : roll (tail xs)
+roll (x:y:z:xs) = (x, y, z) : roll (y:z:xs)
+roll _          = []
 
-nState (l, 0, r) val = val + r + l
-nState (l, m, r) val = 0
+nState :: (Int, Int, Int) -> Int -> Int
+nState (l, 0, r) val = val + l + r
+nState _         _   = 0
 
 sim :: ([Int], [Char]) -> [Int]
-sim (state, row) = 
-    let
-        toSplit = map mapper (zip state row)
-        windows = roll ([0] ++ toSplit ++ [0])
-        newState = zipWith nState windows state
-    in 
-        newState
+sim (state, row) = zipWith nState windows state
+    where
+        toSplit = map (\(v, c) -> if c == '^' then v else 0) (zip state row)
+        windows = roll (0 : toSplit ++ [0])
 
 simulate [] state = state
 simulate (row : rows) state = simulate rows (sim (state, row))
 
+parseInput :: String -> [Int]
+parseInput = map (\c -> if c == '.' then 0 else 1)
+
 main = do
     input <- lines <$> getContents
-    let state = map (\x -> if x == '.' then 0 else 1) (head input)
-    let simulated = simulate (tail input) state
-    print simulated
+    let simulated = simulate (tail input) (parseInput (head input))
     print (sum simulated)
