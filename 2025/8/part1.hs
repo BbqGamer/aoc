@@ -1,11 +1,12 @@
+import Data.List (sort, sortOn, tails, group)
 import Data.List.Split (splitOn)
-import Data.Sort (sort, sortOn)
-import Data.List (tails, group)
 import qualified Data.Map as Map
 import System.Environment (getArgs)
 
-data Point3D = Point3D Int Int Int
+data Point3D = Point3D !Int !Int !Int
     deriving (Show, Eq, Ord)
+
+type Edge = (Point3D, Point3D)
 
 processLine :: String -> Point3D
 processLine line = 
@@ -15,34 +16,34 @@ processLine line =
 
 dist :: Point3D -> Point3D -> Float
 dist (Point3D x1 y1 z1) (Point3D x2 y2 z2) =
-    sqrt (dx ^ 2 + dy ^ 2 + dz ^ 2)
-    where
-        dx = fromIntegral (x2 - x1)
-        dy = fromIntegral (y2 - y1)
-        dz = fromIntegral (z2 - z1)
+    sqrt $ fromIntegral $ (x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2
 
-buildGraph :: Map.Map Point3D Int -> Int -> [((Point3D, Point3D), Float)] -> Map.Map Point3D Int
-buildGraph pointMap _ [] = pointMap
-buildGraph pointMap 0 _ = pointMap
-buildGraph pointMap n (((a,b), _) : points) =
-    res
-    where
-        ma = Map.lookup a pointMap
-        mb = Map.lookup b pointMap
-        res = case (ma, mb) of
-            (Nothing, Nothing)      -> buildGraph (Map.insert b n (Map.insert a n pointMap)) (n-1) points
-            (Nothing, Just mbVal)   -> buildGraph (Map.insert a mbVal pointMap) (n - 1) points
-            (Just maVal, Nothing)   -> buildGraph (Map.insert b maVal pointMap) (n - 1) points
-            (Just maVal, Just mbVal) -> if maVal == mbVal then buildGraph pointMap (n - 1) points else buildGraph (Map.map (\v -> if v == mbVal then maVal else v) pointMap) (n-1) points
+updateGraph :: Int -> Map.Map Point3D Int -> Edge -> Map.Map Point3D Int
+updateGraph newId pointMap (a, b) =
+    case (Map.lookup a pointMap, Map.lookup b pointMap) of
+        (Nothing, Nothing) -> 
+            Map.insert a newId $ Map.insert b newId pointMap
+        (Just idA, Nothing) -> 
+            Map.insert b idA pointMap
+        (Nothing, Just idB) -> 
+            Map.insert a idB pointMap
+        (Just idA, Just idB) -> 
+            if idA == idB 
+            then pointMap 
+            else Map.map (\v -> if v == idB then idA else v) pointMap
 
+main :: IO ()
 main = do
-    input <- getContents
     args <- getArgs
+    input <- getContents
+    
     let n = read (head args) :: Int
-    let parsed = map processLine (lines input)
-    let prod = [(a, b) | (a:bs) <- tails parsed, b <- bs]
-    let dists = map (uncurry dist) prod
-    let sorted = sortOn snd (zip prod dists)
-    let res = buildGraph Map.empty n sorted
-    print (sort (Map.elems res))
-    print (product (take 3 (reverse (sort (map length (group (sort (Map.elems res))))))))
+        points = map processLine (lines input)
+        edges = [ ((p1, p2), dist p1 p2) | (p1:rest) <- tails points, p2 <- rest ]
+        sortedEdges = sortOn snd edges
+        edgesToProcess = map fst $ take n sortedEdges
+        finalMap = foldl (\acc (id, edge) -> updateGraph id acc edge) Map.empty (zip [n, n-1 ..] edgesToProcess)
+        componentSizes = map length $ group $ sort $ Map.elems finalMap
+        top3Product = product $ take 3 $ reverse $ sort componentSizes
+
+    print top3Product
