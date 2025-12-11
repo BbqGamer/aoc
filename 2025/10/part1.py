@@ -1,6 +1,8 @@
 import re
 import sys
 
+import z3
+
 
 def parse_line(line: str):
     """
@@ -50,26 +52,21 @@ def parse_stream(lines):
 if __name__ == "__main__":
     res = 0
     for i, (lights, buttons, joltage) in enumerate(parse_stream(sys.stdin.readlines())):
-        print(i)
-        first = (False,) * len(lights)
-        visited = set()
-        queue = [(first, 0)]
-        shouldEnd = False
-        while queue:
-            if shouldEnd:
-                break
-            item, count = queue.pop()
-            visited.add(item)
-            for button in buttons:
-                newItem = list(item)
-                for i in button:
-                    newItem[i] = not newItem[i]
-                new = tuple(newItem)
-                if new in visited:
-                    continue
-                if lights == new:
-                    res += count + 1
-                    shouldEnd = True
-                    break
-                queue.insert(0, (new, count + 1))
+        B = [z3.Bool(f"b{b}") for b in range(len(buttons))]
+        equations = []
+        for j, light in enumerate(lights):
+            equation = 0
+            for b, button in enumerate(buttons):
+                if j in button:
+                    equation += z3.If(B[b], 1, 0)
+            equations.append((equation % 2) == int(light))
+        s = z3.Optimize()
+        s.add(equations)
+        s.minimize(z3.Sum([z3.If(b, 1, 0) for b in B]))
+        if s.check() == z3.sat:
+            m = s.model()
+            button_sum = sum(1 for b in B if z3.is_true(m[b]))
+            res += button_sum
+        else:
+            print("unsat")
     print(res)
