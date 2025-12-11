@@ -3,11 +3,11 @@ import sys
 import graphviz
 
 
-def dfs(node, G):
-    if node == "out":
+def dfs(node, end, G):
+    if node == end:
         return 1
 
-    return sum(dfs(e, G) for e in G[node])
+    return sum(dfs(e, end, G) for e in G[node])
 
 
 if __name__ == "__main__":
@@ -15,11 +15,24 @@ if __name__ == "__main__":
     dot = graphviz.Digraph()
     for line in sys.stdin:
         node, r = line.strip().split(": ")
-        dot.node(node)
+
+        cmap = {
+            "dac": "yellow",
+            "fft": "yellow",
+            "svr": "green",
+            "you": "green",
+        }
+        fillcolor = "white" if node not in cmap else cmap[node]
+        dot.node(
+            node,
+            fillcolor=fillcolor,
+            style="filled",
+        )
         edges = r.split()
         for e in edges:
             dot.edge(node, e)
         G[node] = set(edges)
+    dot.node("out", fillcolor="red", style="filled")
 
     dot.render("res.gv", view=True)
-    print(dfs("you", G))
+    print(dfs("you", "out", G))
